@@ -1,9 +1,10 @@
 package com.vn.jav.henllo.Controller;
 
 import com.vn.jav.henllo.Model.*;
-import com.vn.jav.henllo.Repository.HotelsRepository;
 import com.vn.jav.henllo.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -12,8 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,15 +33,14 @@ public class homeControl {
     private final RoomTypeService roomTypeService;
     private final HotelsService hotelsService;
     private final RoomService roomService;
-    private final HotelsRoomService hotelsRoomService;
     private final BillService billService;
+
     @Autowired
     public homeControl(UserService userService,
                        EmailService emailService,
                        RoomTypeService roomTypeService,
                        HotelsService hotelsRepository,
                        RoomService roomService,
-                       HotelsRoomService hotelsRoomService,
                        BillService billService
                        ){
         this.userService =userService;
@@ -45,19 +48,43 @@ public class homeControl {
         this.roomTypeService = roomTypeService;
         this.hotelsService= hotelsRepository;
         this.roomService =roomService;
-        this.hotelsRoomService =hotelsRoomService;
         this.billService = billService;
     }
+    //For custom Query
+    @GetMapping("/room/domain/{id}")
+    public List<RoomDomain> getById(@PathVariable int id){
+        List<RoomDomain> lst = new ArrayList<RoomDomain>();
+      List<Room> lstRoom = roomService.getRoomsByHotel(id);
+        for (int i=0; i<lstRoom.size();i++) {
+        RoomDomain roomDM = new RoomDomain();
+        roomDM.setRoom_name(lstRoom.get(i).getRoom_name());
+        roomDM.setStatus(lstRoom.get(i).getStatus());
+        roomDM.setId_room(lstRoom.get(i).getId_room());
+        RoomType roomTypes = roomTypeService.getRoomTypeById(lstRoom.get(i).getRoom_type());
+
+        roomDM.setType_name(roomTypes.getType_name());
+        roomDM.setPrice(roomTypes.getPrice());
+        roomDM.setBed(roomTypes.getBed());
+        roomDM.setArea(roomTypes.getArea());
+        lst.add(roomDM);
+
+        }
+        return lst;
+    }
+    @PutMapping("/update-total/{id}")
+    public void updateRoom(@PathVariable int id){
+        hotelsService.updateRoomtotal(id);
+    }
+
 
     // For User Entity
     @GetMapping("/user")
     public List<Users> getAllUser(){
-
         return  userService.getAllUser();
 
     }
     @PostMapping("/user")
-    public Users createUser(@Valid @RequestParam Users  user) {
+    public Users createUser(@Valid @RequestBody Users  user) {
 
 
         return userService.createUser(user);
@@ -107,6 +134,16 @@ public class homeControl {
         return roomTypeService.getAllRoomType();
     }
 
+    @PostMapping("/roomtype")
+    public RoomType createRoomType(@RequestBody RoomType roomType){return roomTypeService.addRoomType(roomType);}
+    @PutMapping("/roomtype/{id}")
+    public ResponseEntity<RoomType> updateRoomType(@PathVariable int id, @RequestBody RoomType roomType){
+        return roomTypeService.updateRoomType(id,roomType);
+    }
+    @DeleteMapping("/roomtype/{id}")
+    public ResponseEntity<Map<String,Boolean>> deleteRoomType(@PathVariable int id){
+        return roomTypeService.deleteRoomType(id);
+    }
 
 
 
@@ -116,10 +153,24 @@ public class homeControl {
         return  hotelsService.getAllHotels();
     }
 
-    @GetMapping("/hotels/{phone}")
-    public  List<Hotels> getHotelsByUser(@PathVariable String phone){
-        return hotelsService.getHotelByUser(phone);
+    @GetMapping("/hotels/{id}")
+    public  Hotels getHotelsById(@PathVariable int id){
+        return hotelsService.getHotelById(id);
     }
+    @PostMapping("/hotels")
+    public Hotels createHotels(@Valid @RequestBody Hotels hotels){
+        return  hotelsService.addHotels(hotels);
+    }
+
+    @PutMapping("/hotels/{id}")
+    public ResponseEntity<Hotels> updateHotels(@PathVariable int id,@RequestBody Hotels hotels){
+        return hotelsService.updateHotels(id,hotels);
+    }
+    @DeleteMapping("/hotels/{id}")
+    public ResponseEntity<Map<String,Boolean>> deleteHotels(@PathVariable int id){
+        return hotelsService.deleteHotel(id);
+    }
+
 
 
 
@@ -129,15 +180,24 @@ public class homeControl {
         return roomService.getAllRoom();
     }
 
-    //Hotelsroom
-    @GetMapping("/hotelsroom")
-    public List<Hotelsroom> getAllHotelsRoom(){
-        return hotelsRoomService.getAllHotelsRoom();
+    @GetMapping("/room/{id}")
+    public List<Room> getRoomsByHotels(@PathVariable int id){
+        return roomService.getRoomsByHotel(id);
     }
-    @GetMapping("/hotelsroom/{id}")
-    public List<Hotelsroom> getRoomByHotels(@PathVariable int id){
-        return hotelsRoomService.getHotelsRoomByHotels(id);
+
+    @PostMapping("/room")
+    public Room createRoom(@RequestBody Room room){return roomService.addRoom(room);}
+    @PutMapping("/room/{id}")
+    public ResponseEntity<Room> updateRoom(@PathVariable int id, @RequestBody Room room){
+        return roomService.updateRoom(id,room);
     }
+    @DeleteMapping("/room/{id}")
+    public ResponseEntity<Map<String,Boolean>> deleteRoom(@PathVariable int id){
+        return roomService.deleteRoom(id);
+    }
+
+
+
 
 
     //Bill
@@ -145,6 +205,16 @@ public class homeControl {
     public List<Bill> getAllBill(){
         return billService.getAllBill();
     }
+
+    @PostMapping("/bill")
+    public Bill createBill(@RequestBody Bill bill){
+        return billService.addBill(bill);
+    }
+    @GetMapping("/bill/{phone}")
+    public List<Bill> getBillByPhone(@PathVariable String phone){
+        return billService.getBillByUser(phone);
+    }
+
 
 
 

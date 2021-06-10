@@ -20,4 +20,6 @@ public class Room implements Serializable {
     private int id_room;
     private String room_name;
     private int room_type;
+    private int id_hotels;
+    private Boolean status;
 }

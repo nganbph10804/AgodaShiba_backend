@@ -20,7 +20,7 @@ public class RoomType implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
+    private String type_name;
 
     private Double price;
     private  Double area;

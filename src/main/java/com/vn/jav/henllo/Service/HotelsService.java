@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import java.util.Map;
 @Service
 public class HotelsService {
 
+    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
     private final HotelsRepository hotelsRepository;
 
     @Autowired

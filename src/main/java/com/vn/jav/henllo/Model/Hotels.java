@@ -23,7 +23,8 @@ public class Hotels implements Serializable {
     @NotBlank
     private String address;
     @Max(value = 5)
-    private int star_rate;
+    private double star_rate;
+    private String sort_desc;
 
     private  int room_total;
 

@@ -53,5 +53,10 @@ public class RoomService {
 
         return ResponseEntity.ok(resp);
     }
-
+    public void updateRented(int id){
+        roomRes.updateRoomRented(id);
+    }
+    public void updateRestore(int id){
+        roomRes.updateRoomRestore(id);
+    }
 }

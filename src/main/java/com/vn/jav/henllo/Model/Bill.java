@@ -16,10 +16,11 @@ public class Bill implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bill_id;
     private int room_id;
-    private int phone_user;
+    private String phone_user;
     @Temporal(TemporalType.TIMESTAMP)
     private Date time_in;
     @Temporal(TemporalType.TIMESTAMP)
     private Date time_out;
     private Double total_money;
+    private Boolean confirm;
 }

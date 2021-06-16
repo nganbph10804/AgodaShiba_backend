@@ -31,4 +31,7 @@ public class BillService {
     public List<Bill> getBillByUser(@PathVariable String phone){
         return billRes.getBillByPhone_user(phone);
     }
+    public void confirmBill(int id){
+        billRes.updateConfirmBill(id);
+    }
 }

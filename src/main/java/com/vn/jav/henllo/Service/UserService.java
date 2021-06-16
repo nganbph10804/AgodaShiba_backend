@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class UserService {
+public class UserService  {
 
     // get current folder
     private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
@@ -62,6 +62,10 @@ public class UserService {
             os.write(image.getBytes());
         }
         us.setImg(imagePath.resolve(image.getOriginalFilename()).toString());
+
+//        us.setImg(UploadImage.UploadFile(image));
+
+
         Users updatedUser = userRes.save(us);
 
         return ResponseEntity.ok(updatedUser);

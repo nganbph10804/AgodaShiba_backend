@@ -16,6 +16,7 @@ public class RoomDomain {
     private int bed;
     private Double area;
     private Boolean status;
+    private String img;
 
 
 }

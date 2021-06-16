@@ -52,7 +52,7 @@ public class homeControl {
     }
     //For custom Query
     @GetMapping("/room/domain/{id}")
-    public List<RoomDomain> getById(@PathVariable int id){
+    public List<RoomDomain> getRoomByIdHotel(@PathVariable int id){
         List<RoomDomain> lst = new ArrayList<RoomDomain>();
       List<Room> lstRoom = roomService.getRoomsByHotel(id);
         for (int i=0; i<lstRoom.size();i++) {
@@ -66,6 +66,7 @@ public class homeControl {
         roomDM.setPrice(roomTypes.getPrice());
         roomDM.setBed(roomTypes.getBed());
         roomDM.setArea(roomTypes.getArea());
+        roomDM.setImg(roomTypes.getImg());
         lst.add(roomDM);
 
         }
@@ -75,6 +76,20 @@ public class homeControl {
     public void updateRoom(@PathVariable int id){
         hotelsService.updateRoomtotal(id);
     }
+
+    @PutMapping("/update-rented/{id}")
+    public void updateRented(@PathVariable int id){
+        roomService.updateRented(id);
+    }
+    @PutMapping("/update-restore/{id}")
+    public void updateRestore(@PathVariable int id){
+        roomService.updateRestore(id);
+    }
+    @PutMapping("/confirm-bill/{id}")
+    public void updateConfirmBill(@PathVariable int id){
+        billService.confirmBill(id);
+    }
+
 
 
     // For User Entity
